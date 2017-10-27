@@ -1,0 +1,34 @@
+{
+  "name": "FB adblock",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "block ad on facebook",
+  "background": {
+      "scripts": ["/js/background.js"],
+      "persistent":false
+  },  
+  "content_scripts": [
+  {
+      "matches": ["https://www.facebook.com/*"],
+      "js": ["js/jquery/jquery.js","js/content.js"]
+  }
+  ],
+  "permissions": [
+    "storage",
+    "downloads",
+    "pageCapture",
+    "contextMenus"
+  ],
+  "commands" : {
+  "reload_extension" : {
+  "suggested_key" : {
+  "default" : "Ctrl+Q",
+  "windows" : "Ctrl+Q",
+  "mac" : "MacCtrl+Q",
+  "chromeos" : "Ctrl+Q",
+  "linux" : "Ctrl+Q"
+  },
+  "description" : "shortcut for reloading extensions"
+  }
+  }
+}
