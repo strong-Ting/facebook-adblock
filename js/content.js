@@ -30,14 +30,72 @@ function when_change(){
     {
         if(haveStr(ad_class[i].innerHTML,"贊助"))
         {
+     //       ad_class[i].style.display = 'none';
             ad_class[i].style.color = 'yellow';
         }
     }
-//   ad_class[0].style.color = 'yellow';
 
-}
+    }
+var check_num = 0; //use class _5pcq to check new post add
+var post_num = 0;
 $(document).bind('DOMSubtreeModified', function () {
+    var check_numTemp = $('._5pcq').length;
+    var post_numTemp = document.getElementsByClassName('_5pbw _5vra').length - document.getElementsByClassName('_1qbu _5pbw _5vra').length - 1;
+    if(check_numTemp>check_num){
+    check_num = check_numTemp;
     when_change();
+    console.log('old:'+post_num);
+    console.log('new:'+post_numTemp);
+    get_time(post_num,post_numTemp);
+    post_num = post_numTemp;
+    }
 });
 var test = document.getElementById('pagelet_ego_pane');
 test.style.display = 'none';
+
+var sponsor_array = [];
+function get_time(post_num,post_numTemp){
+    var time_class_obj =  $('span.fsm');
+    var time_class = [];
+    for(var i =0;i<time_class_obj.length;i++) // obj to array
+    {
+        time_class.push(time_class_obj[i]);
+    }
+    for(var i = 0 ;i<sponsor_array.length;i++)
+    {
+        time_class.splice(sponsor_array[i],0,"贊助貼文");
+    } 
+    for(var i = post_num;i<=post_numTemp;i++){
+        try{
+   // console.log(time_class[0].lastChild);
+        var time_class_child =time_class[i].lastChild;
+ //   console.log(time_class);
+        var conect = time_class_child.href;
+        var time = time_class_child.lastChild.title;
+        console.log(i+":"+conect);
+        console.log(i+":"+time);
+
+        }
+        catch(e){
+        //    if(when_change()){
+            var had = false;
+            for(var j=0;j<sponsor_array.length;j++)
+            {
+                console.log('sponsor:'+sponsor_array[j],"i:"+i);
+                if(sponsor_array[j]==i)
+                {
+                    had =true;
+                }
+            }
+            if(!had){
+                sponsor_array.push(i);
+                time_class.splice(i, 0, "贊助貼文");  
+            }
+            console.log('贊助:'+i);
+
+          //  }
+        }   
+    }
+}
+
+
