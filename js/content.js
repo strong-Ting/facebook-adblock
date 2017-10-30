@@ -1,101 +1,55 @@
-function haveStr(str,search_str){
-    var result = str.search(search_str);
-    if(result == -1){
-    return false
-    }
-    else{
-    return true
-    }
-}
+//hide side ad
+document.getElementById('pagelet_ego_pane').style.display = 'none';
 
-
-function when_change(){
-//    $('div._4ikz:contains(贊助)').css('color','yellow');
-    var ad_class = $('div._4ikz:contains(贊助)');
-    var match = false;
-
-    while(!match)
-    {
-        ad_class = ad_class.children();
-        var idName = ad_class[0].id;
-        if(idName === undefined){
-            match = false;
-        }
-        else{
-            match = haveStr(idName,'hyperfeed');
-        }
-        
-    }
-    for(var i = 0;i<ad_class.length;i++)
-    {
-        if(haveStr(ad_class[i].innerHTML,"贊助"))
-        {
-     //       ad_class[i].style.display = 'none';
-            ad_class[i].style.color = 'yellow';
-        }
-    }
-
-    }
-var check_num = 0; //use class _5pcq to check new post add
+//listen post num add
 var post_num = 0;
-$(document).bind('DOMSubtreeModified', function () {
-    var check_numTemp = $('._5pcq').length;
-    var post_numTemp = document.getElementsByClassName('_5pbw _5vra').length - document.getElementsByClassName('_1qbu _5pbw _5vra').length - 1;
-    if(check_numTemp>check_num){
-    check_num = check_numTemp;
-    when_change();
-    console.log('old:'+post_num);
-    console.log('new:'+post_numTemp);
-    get_time(post_num,post_numTemp);
+var check_num = 0;
+$(document).bind('DOMSubtreeModified',function(){
+    var post_numTemp = get_post_num();
+    var check_numTemp = check_post_load();
+    if(post_numTemp > post_num && check_numTemp > check_num){
+        var time_now = new Date();
+        console.log('load post:'+post_numTemp,'time:'+time_now.getTime());
+        post_sponsor(post_num,post_numTemp);
+    }
     post_num = post_numTemp;
-    }
+//    console.log(post_numTemp);
 });
-var test = document.getElementById('pagelet_ego_pane');
-test.style.display = 'none';
 
-var sponsor_array = [];
-function get_time(post_num,post_numTemp){
-    var time_class_obj =  $('span.fsm');
-    var time_class = [];
-    for(var i =0;i<time_class_obj.length;i++) // obj to array
-    {
-        time_class.push(time_class_obj[i]);
-    }
-    for(var i = 0 ;i<sponsor_array.length;i++)
-    {
-        time_class.splice(sponsor_array[i],0,"贊助貼文");
-    } 
-    for(var i = post_num;i<=post_numTemp;i++){
-        try{
-   // console.log(time_class[0].lastChild);
-        var time_class_child =time_class[i].lastChild;
- //   console.log(time_class);
-        var conect = time_class_child.href;
-        var time = time_class_child.lastChild.title;
-        console.log(i+":"+conect);
-        console.log(i+":"+time);
-
-        }
-        catch(e){
-        //    if(when_change()){
-            var had = false;
-            for(var j=0;j<sponsor_array.length;j++)
-            {
-                console.log('sponsor:'+sponsor_array[j],"i:"+i);
-                if(sponsor_array[j]==i)
-                {
-                    had =true;
-                }
-            }
-            if(!had){
-                sponsor_array.push(i);
-                time_class.splice(i, 0, "贊助貼文");  
-            }
-            console.log('贊助:'+i);
-
-          //  }
-        }   
-    }
+function get_post_num(){
+//    var post_condition_0 = $("div[id*='hyperfeed']");  //the condition cant work perfect
+    var post_condition_1 = $("div[class*='_5jmm _5pat']");
+    var post = post_condition_1 ;
+    var post_num = post.length;
+    return post_num;
 }
 
+function check_post_load(){
+    var check = $('._5pcq');
+    var check_num = check.length;
+    return check_num;
+}
 
+//need to notice loading
+var sponsor_num = 0;
+function post_sponsor(post_num_changed,post_num_now)
+{
+    var post = $("div[class*='_5jmm _5pat']").find(':contains(贊助)');
+    console.log("post_sponsor:" + post.length);
+    if(post.length>sponsor_num)
+    {
+    for(var i=  post_num_changed;i<post_num_now;i++)
+    {
+        var ad = $("div[class*='_5jmm _5pat']").eq(i).find("div[id*='feed_subtitle']")//.find(':contains(贊助)');
+        console.log(i);
+        console.log($("div[class*='_5jmm _5pat']").eq(i));
+        console.log(ad);
+        if(ad.length > 0)
+        {
+            $("div[class*='_5jmm _5pat']").eq(i).css("color","yellow");
+            console.log('changed');
+        }
+    }
+    }
+    sponsor_num = post.length;
+}
