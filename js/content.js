@@ -135,4 +135,5 @@ const first_work = ()=>{
     dom_modified_2();
     block_slide();
 }
+
 first_work();
