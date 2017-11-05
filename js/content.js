@@ -30,9 +30,9 @@ let post =(start,end)=> {
         }
     };
     //when the post have been handled append a class,in order to check it.
-    const done =(post)=>{
+    const done =(post,num)=>{
         let done = document.createElement("the_post_done");
-        let messageNode = document.createTextNode('have done');
+        let messageNode = document.createTextNode('have done the post num:'+num);
         //pElement.style.display='none'; 
         done.append(messageNode);
         post.append(done);
@@ -44,7 +44,7 @@ let post =(start,end)=> {
         if(sponsor.length > 0){
             post.css("color","yellow");
             console.log('the num:' +handle_num+'  is sponsor');
-            done(post);
+            done(post,handle_num);
         }
         else{
             get_detail(post);
@@ -55,31 +55,54 @@ let post =(start,end)=> {
         let href='',
             author_name='',
             author_href='',
-            time='';
+            time='',
+            detail={},
+            author_detail={};
 
         try{
             href = post.find('._5pcq')[0].href;
             try{
-                let author =  post.find('.fwb');
-                for(let i=author.length-1;i>=0;i--){
-                    author_name = author_name +' , ' +author.eq(i).find('a').text();        
-                    console.log(author.eq(i).find('a'));
-                    author_href =author_href+' , '+author[i].lastChild.href;
+                let author =  post.find('._5va4').find('.fwb');
+                console.log(author);
+                for(let i=0;i<author.length;i++){
+                    if(i==0){
+                        author_name = author.eq(i).find('a').eq(0).text();
+                        author_href = author[i].lastChild.href;
+                     }
+                    else{
+/*
+                        author_name = author_name +' , ' +author.eq(i).find('a').eq(0).text();        
+                    //   console.log(author.eq(i).find('a'));
+                        author_href =author_href+' , '+author[i].lastChild.href;
+*/
+                        author_name = author.eq(i).find('a').eq(0).text();
+                        author_href = author[i].lastChild.href;
+
+                        console.log('*************************');
+                    }
+                    author_detail[i]={'href':author_href,'name':author_name};
                 }
             }
             catch(e){
                 console.log(e);
             }
             time = post.find('abbr._5ptz')[0].title;
-
+            
+            detail['num']=handle_num;
+            detail['href']=href;
+            detail['time']=time;
+            detail['author']=author_detail;
+           /* 
             console.log('the num:'+handle_num);
             console.log('post_href:'+href);
             console.log('author_name:'+author_name);
             console.log('author_href:'+author_href);
             console.log('time:'+time);
+            */
+            console.log(detail);
             console.log('/////////////////////////////');
 
-            done(post);
+            done(post,handle_num);
         }
         catch(e){
         //    console.log(e);
