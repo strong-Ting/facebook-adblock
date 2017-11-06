@@ -12,9 +12,16 @@ const dom_modified = ()=>{
     $("#pagelet_ego_pane").on('DOMSubtreeModified',function(){
         block_slide();
     });
+
+    let last_load =0;
+    let load = 0; 
+
     $("#stream_pagelet").on('DOMSubtreeModified',function(){
-        let post = post_content(); 
-        console.log(post.length);
+       let num = get_post_num(last_load,load);
+        last_load = num.last_load;
+        load = num.load;
+        console.log(last_load,load);
+        post(last_load,load);
     });
 }
 
@@ -114,8 +121,9 @@ let post =(start,end)=> {
         if(href!='' && time!=''){
             console.log(detail);
             console.log('/////////////////////////////');
+            done(post,handle_num);
+
         }
-        done(post,handle_num);
     };
 
     for(handle_num;handle_num<=end;handle_num++){
@@ -139,18 +147,18 @@ const get_post_num=(last_load,load)=>{
     };
 }
 
-
-
-const dom_modified_2=()=>{
-    const dom_listenser=(idName,mutationHandler)=>{
+const dom_listenser=(idName,mutationHandler)=>{
         let target = document.querySelector(idName);
         let config = { attributes: true, childList: true, characterData: true,subtree:true};
         let observer = new MutationObserver(mutationHandler);
         observer.observe(target, config);
     };
+
+const dom_modified_2=()=>{
+    
     let last_load =0;
     let load = 0;
-    dom_listenser('#stream_pagelet',(mutations)=>{
+    dom_listenser('#contentArea',(mutations)=>{
         let num = get_post_num(last_load,load);
         last_load = num.last_load;
         load = num.load;
@@ -163,6 +171,16 @@ const dom_modified_2=()=>{
 
 const first_work = ()=>{
 //    dom_modified();
+    dom_listenser('body',(mutations)=>{
+        mutations.forEach((mutation)=>{
+            for(let i=0;i<mutation.removedNodes.length;i++ ){
+                if(mutation.removedNodes[i].id == 'feedx_sprouts_container'){
+                    console.log('yeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+                    dom_modified_2();
+                }
+            }
+        });
+    });
     dom_modified_2();
     block_slide();
 }
