@@ -39,7 +39,7 @@ let post =(start,end)=> {
     };
 
     const is_sponsor = (post)=>{
-        let sponsor = post.children(':contains(贊助)');
+        let sponsor = post.find('._5pcp').children(':contains(贊助)');
 
         if(sponsor.length > 0){
             post.css("color","yellow");
@@ -50,8 +50,9 @@ let post =(start,end)=> {
             get_detail(post);
         }
 
-            };
+    };
     const get_detail = (post)=>{
+
         let href='',
             author_name='',
             author_href='',
@@ -61,37 +62,48 @@ let post =(start,end)=> {
 
         try{
             href = post.find('._5pcq')[0].href;
-            try{
-                let author =  post.find('._5va4').find('.fwb');
-                console.log(author);
-                for(let i=0;i<author.length;i++){
-                    if(i==0){
-                        author_name = author.eq(i).find('a').eq(0).text();
-                        author_href = author[i].lastChild.href;
-                     }
-                    else{
+        }
+        catch(e){
+      /*
+            console.log(e);
+            console.log(post.find('.fsm.fwn.fcg'));
+            href = post.find('.fsm.fwn.fcg').children()[0].href;
+    */
+        }
+
+        try{
+            let author =  post.find('._5va4').find('.fwb');
+            //console.log(author);
+            for(let i=0;i<author.length;i++){
+                if(i==0){
+                    author_name = author.eq(i).find('a').eq(0).text();
+                    author_href = author[i].lastChild.href;
+                    }
+                else{
 /*
                         author_name = author_name +' , ' +author.eq(i).find('a').eq(0).text();        
                     //   console.log(author.eq(i).find('a'));
                         author_href =author_href+' , '+author[i].lastChild.href;
 */
-                        author_name = author.eq(i).find('a').eq(0).text();
-                        author_href = author[i].lastChild.href;
+                    author_name = author.eq(i).find('a').eq(0).text();
+                    author_href = author[i].lastChild.href;
 
-                        console.log('*************************');
-                    }
-                    author_detail[i]={'href':author_href,'name':author_name};
+                    console.log('*************************');
                 }
+                author_detail[i]={'href':author_href,'name':author_name};
             }
-            catch(e){
-                console.log(e);
-            }
+        }
+        catch(e){
+            console.log(e);
+        }
+
+        try{
             time = post.find('abbr._5ptz')[0].title;
-            
-            detail['num']=handle_num;
-            detail['href']=href;
-            detail['time']=time;
-            detail['author']=author_detail;
+        }
+        catch(e){
+        }  
+          
+        detail[handle_num]={'href':href,'time':time,'author':author_detail};
            /* 
             console.log('the num:'+handle_num);
             console.log('post_href:'+href);
@@ -99,15 +111,11 @@ let post =(start,end)=> {
             console.log('author_href:'+author_href);
             console.log('time:'+time);
             */
+        if(href!='' && time!=''){
             console.log(detail);
             console.log('/////////////////////////////');
-
-            done(post,handle_num);
         }
-        catch(e){
-        //    console.log(e);
-        }
-
+        done(post,handle_num);
     };
 
     for(handle_num;handle_num<=end;handle_num++){
