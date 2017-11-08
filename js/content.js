@@ -28,7 +28,7 @@ const dom_modified = ()=>{
 let post =(start,end)=> {
     let handle_num = start;
     const get_content = (handle)=>{
-        let post = $('._5jmm._5pat._3lb4.d_1ox2hq53yy').eq(handle_num);
+        let post = $('._5jmm._5pat._3lb4').eq(handle_num);
         if(post.find('the_post_done').length>0){
 //            console.log('heve done');
         }
@@ -64,8 +64,24 @@ let post =(start,end)=> {
             author_name='',
             author_href='',
             time='',
+            post_id='',
+            content='',
+            feedback_json={},
             detail={},
             author_detail={};
+
+
+        try{
+            post_id = post[0].id;
+        }
+        catch(e){
+        }
+
+        try{
+            content = post.find('.userContent').text();
+        }
+        catch(e){
+        }
 
         try{
             href = post.find('._5pcq')[0].href;
@@ -80,28 +96,29 @@ let post =(start,end)=> {
 
         try{
             let author =  post.find('._5va4').find('.fwb');
-            //console.log(author);
+/*
             for(let i=0;i<author.length;i++){
                 if(i==0){
                     author_name = author.eq(i).find('a').eq(0).text();
                     author_href = author[i].lastChild.href;
                     }
                 else{
-/*
-                        author_name = author_name +' , ' +author.eq(i).find('a').eq(0).text();        
-                    //   console.log(author.eq(i).find('a'));
-                        author_href =author_href+' , '+author[i].lastChild.href;
-*/
+
                     author_name = author.eq(i).find('a').eq(0).text();
                     author_href = author[i].lastChild.href;
 
                     console.log('*************************');
                 }
-                author_detail[i]={'href':author_href,'name':author_name};
             }
+*/
+            author_name = author.eq(0).find('a').eq(0).text();
+            author_href = author[0].lastChild.href;
+
+            author_detail={'href':author_href,'name':author_name};
+
         }
         catch(e){
-            console.log(e);
+            //console.log(e);
         }
 
         try{
@@ -109,15 +126,29 @@ let post =(start,end)=> {
         }
         catch(e){
         }  
-          
-        detail[handle_num]={'href':href,'time':time,'author':author_detail};
-           /* 
-            console.log('the num:'+handle_num);
-            console.log('post_href:'+href);
-            console.log('author_name:'+author_name);
-            console.log('author_href:'+author_href);
-            console.log('time:'+time);
-            */
+
+        //catch feedback num    
+        try{
+//cause Infinite loop
+/*
+            let feedback = post.find('._57w');
+            let comment = feedback.find('._ipm._-56').text(); //a lot post can't get
+            let share = post.find('.UFIShareLink').text();
+            if(share == ""){
+                share = feedback.find('._ipm._2x0m').text();
+            }
+
+            let feel = post.find('._3t54');
+            let like = feel.find('._3emk').attr('aria-label');
+            let feel_json = {'like':like};
+            feedback_json = {'comment':comment,'share':share,'feel':feel_json};
+*/
+        }
+        catch(e){
+        }        
+
+        detail[handle_num]={'id':post_id,'href':href,'time':time,'author':author_detail,'content':content,'feedback':feedback_json};
+
         if(href!='' && time!=''){
             console.log(detail);
             console.log('/////////////////////////////');
@@ -133,7 +164,7 @@ let post =(start,end)=> {
 };
 
 const get_post_num=(last_load,load)=>{
-    let post = $('._5jmm._5pat._3lb4.d_1ox2hq53yy');
+    let post = $('._5jmm._5pat._3lb4');
     let post_num = post.length - 1 ;
     if(post_num>load)
     {
@@ -145,7 +176,7 @@ const get_post_num=(last_load,load)=>{
         last_load:last_load,
         load:load
     };
-}
+};
 
 const dom_listenser=(idName,mutationHandler)=>{
         let target = document.querySelector(idName);
@@ -165,24 +196,26 @@ const dom_modified_2=()=>{
         console.log(last_load,load);
         post(last_load,load);
     });
-}
+};
 
 
 
 const first_work = ()=>{
 //    dom_modified();
+
     dom_listenser('body',(mutations)=>{
         mutations.forEach((mutation)=>{
             for(let i=0;i<mutation.removedNodes.length;i++ ){
                 if(mutation.removedNodes[i].id == 'feedx_sprouts_container'){
                     console.log('yeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
                     dom_modified_2();
+                    block_slide();
                 }
             }
         });
     });
     dom_modified_2();
     block_slide();
-}
+};
 
 first_work();
