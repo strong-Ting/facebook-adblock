@@ -30,7 +30,6 @@ let post =(start,end)=> {
     const get_content = (handle)=>{
         let post = $('._5jmm._5pat._3lb4').eq(handle_num);
         if(post.find('the_post_done').length>0){
-//            console.log('heve done');
         }
         else{
         handle(post);
@@ -66,7 +65,7 @@ let post =(start,end)=> {
             time='',
             post_id='',
             content='',
-            feedback_json={},
+            feedback={},
             detail={},
             author_detail={};
 
@@ -118,7 +117,6 @@ let post =(start,end)=> {
 
         }
         catch(e){
-            //console.log(e);
         }
 
         try{
@@ -129,32 +127,33 @@ let post =(start,end)=> {
 
         //catch feedback num    
         try{
-//cause Infinite loop
-/*
-            let feedback = post.find('._57w');
-            let comment = feedback.find('._ipm._-56').text(); //a lot post can't get
+
+            let feedback_sel = post.find('._57w');
+            let comment = feedback_sel.find('._ipm._-56').text(); //a lot post can't get
             let share = post.find('.UFIShareLink').text();
             if(share == ""){
-                share = feedback.find('._ipm._2x0m').text();
+                share = feedback_sel.find('._ipm._2x0m').text();
             }
 
-            let feel = post.find('._3t54');
-            let like = feel.find('._3emk').attr('aria-label');
-            let feel_json = {'like':like};
-            feedback_json = {'comment':comment,'share':share,'feel':feel_json};
-*/
+            let feel_sel = post.find('._3t54').find('._3emk');
+            let feel = {};
+            for(let i=0;i<feel_sel.length;i++){
+                feel[i] = feel_sel.eq(i).attr('aria-label');
+            }
+            feedback = {'comment':comment,'share':share,'feel':feel};
+
         }
         catch(e){
         }        
 
-        detail[handle_num]={'id':post_id,'href':href,'time':time,'author':author_detail,'content':content,'feedback':feedback_json};
+        detail[handle_num]={'id':post_id,'href':href,'time':time,'author':author_detail,'content':content,'feedback':feedback};
 
         if(href!='' && time!=''){
             console.log(detail);
             console.log('/////////////////////////////');
             done(post,handle_num);
-
         }
+
     };
 
     for(handle_num;handle_num<=end;handle_num++){
